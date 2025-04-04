@@ -1,5 +1,18 @@
 source "https://rubygems.org"
 
+# API & Authentication/Authorization
+
+# For building the GraphQL API
+gem 'graphql'
+# For user authentication (sessions, registration, etc) 
+gem 'devise'
+# For JWT token authentication with Devise (API focus)
+gem 'devise-jwt'
+# For authorization (permissions)
+gem 'pundit'
+# To allow frontend requests (CORS)
+gem 'rack-cors'
+
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem "rails", "~> 8.0.2"
 # The modern asset pipeline for Rails [https://github.com/rails/propshaft]
@@ -61,3 +74,4 @@ group :test do
   gem "capybara"
   gem "selenium-webdriver"
 end
+gem "graphiql-rails", group: :development
