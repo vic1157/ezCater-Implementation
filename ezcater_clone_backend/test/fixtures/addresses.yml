@@ -1,0 +1,21 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  nickname: MyString
+  street_address: MyString
+  city: MyString
+  state: MyString
+  zip_code: MyString
+  is_default: false
+  last_used_at: 2025-04-04 12:07:42
+  user: one
+
+two:
+  nickname: MyString
+  street_address: MyString
+  city: MyString
+  state: MyString
+  zip_code: MyString
+  is_default: false
+  last_used_at: 2025-04-04 12:07:42
+  user: two
