@@ -4,7 +4,11 @@ class User < ApplicationRecord
 	devise :database_authenticatable, :registerable,
 			:recoverable, :rememberable, :validatable
 	
-	# Add this line. dependent: :destory deletes user's addresses if user is deleted
 	has_many :addresses, dependent: :destroy
+	has_many :saved_restaurants, dependent: :destroy
+	has_many :restaurants, through: :saved_restaurants
 
+	# Prevent user deletion if they have orders? Or use :destroy? Decision depends on business logic.
+	# has_many :orders, dependent: :restrict_with_error
+	
 end

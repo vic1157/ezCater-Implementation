@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_04_184144) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_05_004445) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -28,6 +28,26 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_04_184144) do
     t.index ["user_id"], name: "index_addresses_on_user_id"
   end
 
+  create_table "orders", force: :cascade do |t|
+    t.datetime "delivery_at", null: false
+    t.integer "headcount", null: false
+    t.string "status", default: "pending", null: false
+    t.decimal "subtotal", precision: 10, scale: 2
+    t.decimal "delivery_fee", precision: 10, scale: 2
+    t.decimal "tax_amount", precision: 10, scale: 2
+    t.decimal "total_amount", precision: 10, scale: 2
+    t.text "special_instructions"
+    t.bigint "user_id", null: false
+    t.bigint "restaurant_id", null: false
+    t.bigint "address_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["address_id"], name: "index_orders_on_address_id"
+    t.index ["restaurant_id"], name: "index_orders_on_restaurant_id"
+    t.index ["status"], name: "index_orders_on_status"
+    t.index ["user_id"], name: "index_orders_on_user_id"
+  end
+
   create_table "restaurants", force: :cascade do |t|
     t.string "name", null: false
     t.text "description"
@@ -39,6 +59,15 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_04_184144) do
     t.float "rating"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "saved_restaurants", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "restaurant_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["restaurant_id"], name: "index_saved_restaurants_on_restaurant_id"
+    t.index ["user_id"], name: "index_saved_restaurants_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -54,4 +83,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_04_184144) do
   end
 
   add_foreign_key "addresses", "users"
+  add_foreign_key "orders", "addresses"
+  add_foreign_key "orders", "restaurants"
+  add_foreign_key "orders", "users"
+  add_foreign_key "saved_restaurants", "restaurants"
+  add_foreign_key "saved_restaurants", "users"
 end
