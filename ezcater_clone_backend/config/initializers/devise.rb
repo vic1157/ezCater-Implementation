@@ -16,6 +16,14 @@ Devise.setup do |config|
 	# by default. You can change it below and use your own secret key.
 	# config.secret_key = '51f77b6313d2258f172eea77bed809ff811e0cc4212348beedf83daaf7fbec025bf892b016bdea614fb132aeb5db8c94f00b9e325880e9e87e6ed51a6d446fb6'
 
+	# ==> JWT configuration
+	config.jwt do |jwt|
+		# Use the secret from Rails credentials
+		jwt.secret = Rails.application.credentials.devise[:jwt_secret_key]
+	end
+
+	config.navigational_formats = ['*/*', :html, :json]
+
 	# ==> Controller configuration
 	# Configure the parent class to the devise controllers.
 	# config.parent_controller = 'DeviseController'
@@ -309,7 +317,19 @@ Devise.setup do |config|
 
 	# When set to false, does not sign a user in automatically after their password is
 	# changed. Defaults to true, so a user is signed in automatically after changing a password.
-	# config.sign_in_after_change_password = true
+	# config.sign_in_after_change_password = true	
+end
 
+Warden::JWTAuth.configure do |config|
+	# 4
+	config.secret = Rails.application.credentials.devise[:jwt_secret_key]
 	
+	# 1
+	# For an API-only app, we likely want JWT active for most paths:
+	config.dispatch_requests = [
+		# Tells Devise to check the Authorization header for a Bearer token
+		['Authorization', /^Bearer\s+/]
+	]
+	
+	config.revocation_requests = [] # Keep empty for now
 end
