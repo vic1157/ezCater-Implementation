@@ -8,6 +8,7 @@ module Types
 		
 		def current_user
 			# 1
+			# Rails.logger.info "GraphQL Context: #{context.inspect}"
 			context[:current_user]
 		end
 

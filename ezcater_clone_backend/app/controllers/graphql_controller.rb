@@ -16,7 +16,6 @@ class GraphqlController < ApplicationController
 			# Query context goes here, for example:
 			# current_user: current_user,
 			warden: warden,
-
 			current_user: current_user,
 
 		}
@@ -29,6 +28,7 @@ class GraphqlController < ApplicationController
 
 	private
 
+	
 	# Handle variables in form data, JSON body, or a blank value
 	def prepare_variables(variables_param)
 		case variables_param
