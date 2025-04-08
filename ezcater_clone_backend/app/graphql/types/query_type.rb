@@ -102,6 +102,38 @@ module Types
 				scope.includes(:user, :restaurant, :address, :order_items)
 			end
 
+		# Single Order Query
+		field :order, Types::OrderType, null: true, description: "Finds a single order by its ID." do
+			argument :id, ID, required: true, description: "The ID of the order to retrieve."
+		end
+	  
+		  # Resolver method for order
+		  def order(id:)
+			current_user = context[:current_user]
+	  
+			# 1 Auth Check
+			unless current_user
+			  raise GraphQL::ExecutionError.new("Authentication required", extensions: { code: 'AUTHENTICATION_ERROR' })
+			end
+	  
+			# 2 Find the Order and Eager Load Associations
+			order = ::Order.includes(:user, :restaurant, :address, :order_items).find_by(id: id)
+	  
+			# 3 Check if order is found
+			unless order
+			  return nil
+			end
+	  
+			# 4 Authorization Check
+			unless order.user_id == current_user.id
+			  # Raise an auth error 
+			  raise GraphQL::ExecutionError.new("You are not authorized to view this order", extensions: { code: 'AUTHORIZATION_ERROR' })
+			end
+	  
+			# 5
+			order
+		  end
+
 		field :node, Types::NodeType, null: true, description: "Fetches an object given its ID." do
 		argument :id, ID, required: true, description: "ID of the object."
 		end
