@@ -1,31 +1,34 @@
 # frozen_string_literal: true
 
 module Types
-  class QueryType < Types::BaseObject
-    field :node, Types::NodeType, null: true, description: "Fetches an object given its ID." do
-      argument :id, ID, required: true, description: "ID of the object."
-    end
+	class QueryType < Types::BaseObject
+		description "The root query type"
+		
+		field :current_user, Types::UserType, null: true, description: "The currently logged-in user, if any."
+		
+		def current_user
+			# 1
+			context[:current_user]
+		end
 
-    def node(id:)
-      context.schema.object_from_id(id, context)
-    end
+		field :node, Types::NodeType, null: true, description: "Fetches an object given its ID." do
+		argument :id, ID, required: true, description: "ID of the object."
+		end
 
-    field :nodes, [Types::NodeType, null: true], null: true, description: "Fetches a list of objects given a list of IDs." do
-      argument :ids, [ID], required: true, description: "IDs of the objects."
-    end
+		def node(id:)
+		context.schema.object_from_id(id, context)
+		end
 
-    def nodes(ids:)
-      ids.map { |id| context.schema.object_from_id(id, context) }
-    end
+		field :nodes, [Types::NodeType, null: true], null: true, description: "Fetches a list of objects given a list of IDs." do
+		argument :ids, [ID], required: true, description: "IDs of the objects."
+		end
 
-    # Add root-level fields here.
-    # They will be entry points for queries on your schema.
+		def nodes(ids:)
+		ids.map { |id| context.schema.object_from_id(id, context) }
+		end
 
-    # TODO: remove me
-    field :test_field, String, null: false,
-      description: "An example field added by the generator"
-    def test_field
-      "Hello World!"
-    end
-  end
+		# Add root-level fields here.
+		# They will be entry points for queries on your schema.
+
+	end
 end
