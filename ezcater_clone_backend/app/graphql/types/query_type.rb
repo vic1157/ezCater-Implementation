@@ -12,7 +12,7 @@ module Types
 			context[:current_user]
 		end
 
-		# --- Add Address Query ---
+		# Address Query
 		field :my_addresses, [Types::AddressType], null: false, description: "Retrieves the list of addresses saved by the current user."
 		
 		# Resolver method for my_addresses
@@ -27,8 +27,24 @@ module Types
 			end
 		
 		current_user.addresses.order(created_at: :desc)
-
 		end
+		
+		# Saved Restaurants Query
+		field :my_saved_restaurants, [Types::RestaurantType], null: false, description: "Retrieves the list of restaurants saved by the current user." 
+	  
+		  # Resolver method for my_saved_restaurants
+		  def my_saved_restaurants
+			current_user = context[:current_user]
+	  
+			# 1. Authentication Check
+			unless current_user
+			  raise GraphQL::ExecutionError.new("Authentication required")
+			end
+	  
+			# 2. Fetch Saved Restaurants
+			current_user.restaurants.order(:name)
+	  
+		  end
 
 		field :node, Types::NodeType, null: true, description: "Fetches an object given its ID." do
 		argument :id, ID, required: true, description: "ID of the object."
