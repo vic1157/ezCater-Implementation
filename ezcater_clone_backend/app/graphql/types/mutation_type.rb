@@ -12,6 +12,7 @@ module Types
     
 	# Addresses
 	field :create_address, mutation: Mutations::CreateAddress, description: "Creates a new address for the current user"
+	field :update_address, mutation: Mutations::UpdateAddress, description: "Updates an existing address for the current user"
     
   end
 end
