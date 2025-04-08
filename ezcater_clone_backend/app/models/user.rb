@@ -16,6 +16,7 @@ class User < ApplicationRecord
 	has_many :addresses, dependent: :destroy
 	has_many :saved_restaurants, dependent: :destroy
 	has_many :restaurants, through: :saved_restaurants
+	has_many :orders, dependent: :restrict_with_error
 
 	# Prevent user deletion if they have orders? Or use :destroy? Decision depends on business logic.
 	# has_many :orders, dependent: :restrict_with_error

@@ -43,8 +43,64 @@ module Types
 	  
 			# 2. Fetch Saved Restaurants
 			current_user.restaurants.order(:name)
-	  
 		  end
+		
+		# Orders Query
+		field :my_orders, [Types::OrderType], null: false, description: "Retrieves the list of orders placed by the current user." do
+			# Arguments for filtering and pagination
+			argument :status, String, required: false, description: "Filter orders by status (e.g., 'confirmed', 'delivered')."
+			argument :limit, Integer, required: false, default_value: 20, description: "Number of orders per page."
+			argument :offset, Integer, required: false, default_value: 0, description: "Offset for pagination."
+			argument :order_by, String, required: false, default_value: "delivery_at DESC", description: "Column to order by (e.g., 'delivery_at DESC', 'created_at ASC')."
+		  end
+
+		# Resolver method for my_orders
+		def my_orders(status: nil, limit:, offset:, order_by:)
+			current_user = context[:current_user]
+
+			# 1. Authentication Check
+			unless current_user
+				raise GraphQL::ExecutionError.new("Authentication required")
+			end
+
+			# 2. Scope (orders, relative to user)
+			scope = current_user.orders
+
+			# 3. Apply Filters
+			scope = scope.where(status: status) if status.present?
+
+			# 4. Define allowed columns and map the input string safely
+			allowed_sort_columns = {
+				"delivery_at" => :delivery_at,
+				"created_at" => :created_at,
+				"total_amount" => :total_amount,
+				"status" => :status
+			  }
+			
+			sort_column_key = :delivery_at # Default column
+			sort_direction = :desc      # Default direction
+
+			if order_by.present?
+				col_name, dir_name = order_by.split
+				col_name&.downcase!
+				dir_name&.upcase!
+
+				if allowed_sort_columns.key?(col_name)
+					sort_column_key = allowed_sort_columns[col_name]
+				  end
+				  if ['ASC', 'DESC'].include?(dir_name)
+					sort_direction = dir_name.downcase.to_sym
+				  end
+				end
+				# Apply the safe ordering
+				scope = scope.order(sort_column_key => sort_direction)
+
+				# 5. Apply Pagination
+				scope = scope.limit(limit).offset(offset)
+
+				# 6. Preload the data needed by the OrderType resolvers
+				scope.includes(:user, :restaurant, :address, :order_items)
+			end
 
 		field :node, Types::NodeType, null: true, description: "Fetches an object given its ID." do
 		argument :id, ID, required: true, description: "ID of the object."
@@ -64,6 +120,5 @@ module Types
 
 		# Add root-level fields here.
 		# They will be entry points for queries on your schema.
-
 	end
 end
