@@ -19,5 +19,18 @@ class User < ApplicationRecord
 
 	# Prevent user deletion if they have orders? Or use :destroy? Decision depends on business logic.
 	# has_many :orders, dependent: :restrict_with_error
+
+	before_save :log_jti_change_attempt, if: :jti_changed?
+
+	private # Or keep it public if you prefer, doesn't matter much here
+
+	def log_jti_change_attempt
+	Rails.logger.info "------ JTI Change Attempt ------"
+	Rails.logger.info "User ID: #{self.id}"
+	# Use _was suffix for ActiveModel::Dirty attribute tracking
+	Rails.logger.info "JTI Was: #{self.jti_was}"
+	Rails.logger.info "JTI Is Now: #{self.jti}"
+	Rails.logger.info "------------------------------"
+	end
 	
 end
