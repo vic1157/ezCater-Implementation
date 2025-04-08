@@ -12,6 +12,24 @@ module Types
 			context[:current_user]
 		end
 
+		# --- Add Address Query ---
+		field :my_addresses, [Types::AddressType], null: false, description: "Retrieves the list of addresses saved by the current user."
+		
+		# Resolver method for my_addresses
+		def my_addresses # Arguments hash would be passed here if defined above
+			current_user = context[:current_user]
+			
+			# Ensure user is logged in
+			unless current_user
+				# Return empty array for unauthenticated users for this query
+				# Alternatively, raise GraphQL::ExecutionError.new("Authentication required")
+				raise GraphQL::ExecutionError.new("Authentication required", extensions: { code: 'AUTHENTICATION_ERROR' })
+			end
+		
+		current_user.addresses.order(created_at: :desc)
+
+		end
+
 		field :node, Types::NodeType, null: true, description: "Fetches an object given its ID." do
 		argument :id, ID, required: true, description: "ID of the object."
 		end

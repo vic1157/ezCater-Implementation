@@ -17,11 +17,11 @@ module Mutations
 			user = User.find_by('lower(email) = ?', email.downcase) # Use input[:email]
 	
 			unless user&.valid_password?(password) # Use input[:password]
-			raise GraphQL::ExecutionError, "Invalid email or password"
+				raise GraphQL::ExecutionError, "Invalid email or password"
 			end
 	
 			unless context[:warden]
-			raise GraphQL::ExecutionError, "Internal Server Error: Warden context not available"
+				raise GraphQL::ExecutionError, "Internal Server Error: Warden context not available"
 			end
 	
 			context[:warden].set_user(user, scope: :user)
