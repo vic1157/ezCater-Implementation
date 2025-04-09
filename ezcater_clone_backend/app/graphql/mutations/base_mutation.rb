@@ -3,7 +3,7 @@
 module Mutations
   class BaseMutation < GraphQL::Schema::RelayClassicMutation
 	# This line is crucial - it disables the auto-generation of input types
-    # input_object_class nil
+    #input_object_class nil
 
 	# Custom input object class:
     input_object_class Types::BaseInputObject

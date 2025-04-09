@@ -18,5 +18,9 @@ module Types
     # Restaurants
     field :save_restaurant, mutation: Mutations::SaveRestaurant, description: "Adds a restaurant to the user's saved list"
     field :unsave_restaurant, mutation: Mutations::UnsaveRestaurant, description: "Removes a restaurant from the user's saved list"
+
+	# Orders
+	field :create_order, mutation: Mutations::CreateOrder, description: "Creates a new order"
+
   end
 end
