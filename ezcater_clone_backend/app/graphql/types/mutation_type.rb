@@ -21,6 +21,7 @@ module Types
 
 	# Orders
 	field :create_order, mutation: Mutations::CreateOrder, description: "Creates a new order"
+	field :cancel_order, mutation: Mutations::CancelOrder, description: "Cancels an existing order"
 
   end
 end
